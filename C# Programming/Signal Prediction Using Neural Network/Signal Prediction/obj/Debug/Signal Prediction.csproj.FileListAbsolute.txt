@@ -1,0 +1,9 @@
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\AAS\AAS_KCB\Signal Prediction\bin\Debug\Signal Prediction.exe.config
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\AAS\AAS_KCB\Signal Prediction\bin\Debug\Signal Prediction.exe
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\AAS\AAS_KCB\Signal Prediction\bin\Debug\Signal Prediction.pdb
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\AAS\AAS_KCB\Signal Prediction\obj\Debug\Signal Prediction.csprojResolveAssemblyReference.cache
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\AAS\AAS_KCB\Signal Prediction\obj\Debug\Signal_Prediction.Form1.resources
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\AAS\AAS_KCB\Signal Prediction\obj\Debug\Signal_Prediction.Properties.Resources.resources
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\AAS\AAS_KCB\Signal Prediction\obj\Debug\Signal Prediction.csproj.GenerateResource.Cache
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\AAS\AAS_KCB\Signal Prediction\obj\Debug\Signal Prediction.exe
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\AAS\AAS_KCB\Signal Prediction\obj\Debug\Signal Prediction.pdb
