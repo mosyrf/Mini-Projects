@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Single Perceptron", "Single Perceptron\Single Perceptron.csproj", "{FFF03E69-E59B-426F-B9B6-5C0697388078}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FFF03E69-E59B-426F-B9B6-5C0697388078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFF03E69-E59B-426F-B9B6-5C0697388078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFF03E69-E59B-426F-B9B6-5C0697388078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFF03E69-E59B-426F-B9B6-5C0697388078}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

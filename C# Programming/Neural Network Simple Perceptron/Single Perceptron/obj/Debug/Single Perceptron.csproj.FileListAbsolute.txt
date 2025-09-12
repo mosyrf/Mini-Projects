@@ -1,0 +1,9 @@
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\Simple Perceptron\KCB_4242201036\Single Perceptron\bin\Debug\Single Perceptron.exe.config
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\Simple Perceptron\KCB_4242201036\Single Perceptron\bin\Debug\Single Perceptron.exe
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\Simple Perceptron\KCB_4242201036\Single Perceptron\bin\Debug\Single Perceptron.pdb
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\Simple Perceptron\KCB_4242201036\Single Perceptron\obj\Debug\Single Perceptron.csprojResolveAssemblyReference.cache
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\Simple Perceptron\KCB_4242201036\Single Perceptron\obj\Debug\Single_Perceptron.Form1.resources
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\Simple Perceptron\KCB_4242201036\Single Perceptron\obj\Debug\Single_Perceptron.Properties.Resources.resources
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\Simple Perceptron\KCB_4242201036\Single Perceptron\obj\Debug\Single Perceptron.csproj.GenerateResource.Cache
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\Simple Perceptron\KCB_4242201036\Single Perceptron\obj\Debug\Single Perceptron.exe
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\Simple Perceptron\KCB_4242201036\Single Perceptron\obj\Debug\Single Perceptron.pdb

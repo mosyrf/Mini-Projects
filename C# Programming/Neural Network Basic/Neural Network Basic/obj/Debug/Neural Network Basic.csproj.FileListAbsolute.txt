@@ -1,0 +1,9 @@
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\AI_4242201036\Neural Network Basic\bin\Debug\Neural Network Basic.exe.config
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\AI_4242201036\Neural Network Basic\bin\Debug\Neural Network Basic.exe
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\AI_4242201036\Neural Network Basic\bin\Debug\Neural Network Basic.pdb
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\AI_4242201036\Neural Network Basic\obj\Debug\Neural Network Basic.csprojResolveAssemblyReference.cache
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\AI_4242201036\Neural Network Basic\obj\Debug\Neural_Network_Basic.Form1.resources
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\AI_4242201036\Neural Network Basic\obj\Debug\Neural_Network_Basic.Properties.Resources.resources
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\AI_4242201036\Neural Network Basic\obj\Debug\Neural Network Basic.csproj.GenerateResource.Cache
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\AI_4242201036\Neural Network Basic\obj\Debug\Neural Network Basic.exe
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 6\Kecerdasan Buatan\Neural Network\AI_4242201036\Neural Network Basic\obj\Debug\Neural Network Basic.pdb
