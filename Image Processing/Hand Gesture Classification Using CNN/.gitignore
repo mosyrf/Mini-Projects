@@ -1,0 +1,33 @@
+# Virtual environment
+env/
+venv/
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc
+
+# Data folders (jangan commit dataset besar)
+data/raw/
+data/processed/
+data/augmented/
+
+# Models (jangan commit model weights besar)
+models/saved_models/
+
+# Jupyter notebooks
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
