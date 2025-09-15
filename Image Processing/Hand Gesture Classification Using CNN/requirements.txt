@@ -4,3 +4,4 @@ tensorflow
 pandas
 scipy
 seaborn
+scikit-learn
