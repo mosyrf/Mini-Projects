@@ -18,3 +18,7 @@ def build_cnn_model(input_shape=(150,150,3), num_classes=3):
     ])
     model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
     return model
+
+if __name__ == "__main__":
+    model = build_cnn_model()
+    model.summary()
