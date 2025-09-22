@@ -1,0 +1,9 @@
+C:\Users\muham\OneDrive\Desktop\ATS PBO\ATS\ATS\bin\Debug\ATS.exe
+C:\Users\muham\OneDrive\Desktop\ATS PBO\ATS\ATS\bin\Debug\ATS.pdb
+C:\Users\muham\OneDrive\Desktop\ATS PBO\ATS\ATS\obj\x86\Debug\ATS.Form1.resources
+C:\Users\muham\OneDrive\Desktop\ATS PBO\ATS\ATS\obj\x86\Debug\ATS.Properties.Resources.resources
+C:\Users\muham\OneDrive\Desktop\ATS PBO\ATS\ATS\obj\x86\Debug\ATS.csproj.GenerateResource.Cache
+C:\Users\muham\OneDrive\Desktop\ATS PBO\ATS\ATS\obj\x86\Debug\ATS.exe
+C:\Users\muham\OneDrive\Desktop\ATS PBO\ATS\ATS\obj\x86\Debug\ATS.pdb
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 4\PEMROGRAMAN BERORIENTASI OBJEK\ATS PBO\ATS\ATS\obj\x86\Debug\ATS.exe
+C:\Users\muham\OneDrive - Politeknik Negeri batam\PERKULIAHAN\SEMESTER 4\PEMROGRAMAN BERORIENTASI OBJEK\ATS PBO\ATS\ATS\obj\x86\Debug\ATS.pdb
