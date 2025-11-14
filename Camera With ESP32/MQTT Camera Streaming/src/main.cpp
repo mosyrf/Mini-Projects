@@ -18,6 +18,7 @@ const char *WIFI_PASSWORD = "Suharno090970";
 // --- Konfigurasi MQTT ---
 const char *MQTT_USER = "mosyrf";
 const char *MQTT_PASSWORD = "mosyrfMQTT";
+const char *MQTT_CLIENT_ID = "MQTT_Streaming";
 const char *MQTT_SERVER = "broker.avisha.id";
 const int MQTT_PORT = 1883;
 const char *MQTT_TOPIC = "mosyrf/camera";
@@ -25,6 +26,15 @@ const char *MQTT_TOPIC = "mosyrf/camera";
 // Gunakan WiFiClient untuk koneksi jaringan pada ESP32
 WiFiClient espClient;
 PubSubClient client(espClient);
+
+// --- Konfigurasi LED & Push Button ---
+const int led1 = 15;
+const int led2 = 9;
+bool ledStatus = false;
+
+const int inBoardButton = 47;
+unsigned long lastDebounceTime = 0;
+const unsigned long debounceDelay = 50;
 
 // Buffer MQTT harus lebih besar dari ukuran gambar.
 const int MQTT_BUFFER_SIZE = 1024 * 30;
@@ -49,8 +59,6 @@ void setup()
     axp.enableCameraPower(axp.eOV2640);
 
     connectWifi();
-    setTime();
-    espClient.setCACert(root_ca);
     client.setBufferSize(MQTT_BUFFER_SIZE);
     client.setServer(MQTT_SERVER, MQTT_PORT);
     cameraInit();
@@ -118,6 +126,7 @@ void connectWifi()
 {
     Serial.print("Menghubungkan ke WiFi: ");
     Serial.println(WIFI_SSID);
+    WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
     while (WiFi.status() != WL_CONNECTED)
@@ -140,7 +149,6 @@ void connectMQTT()
         Serial.print("...");
         String clientId = "FOMO Model - " + String(random(0xffff), HEX);
 
-        // Menggunakan otentikasi: client.connect(ID, USER, PASS)
         if (client.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASSWORD))
         {
             Serial.println("Terhubung! (Verified)");
@@ -150,7 +158,6 @@ void connectMQTT()
             Serial.print("Gagal, rc=");
             Serial.println(client.state());
             Serial.println("Mencoba lagi...");
-            // ESP.restart(); // Hapus restart agar lebih mudah di-debug
         }
     }
 }

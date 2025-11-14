@@ -10,6 +10,9 @@
 const char *ssid = "SUHARNO";
 const char *password = "Suharno090970";
 
+const int led1 = 15;
+const int led2 = 9;
+
 void startCameraServer();
 void setupLedFlash(int pin);
 
@@ -121,6 +124,11 @@ void setup()
   Serial.print("Camera Ready! Use 'http://");
   Serial.print(WiFi.localIP());
   Serial.println("' to connect");
+
+  pinMode(led1, OUTPUT);
+  pinMode(led2, OUTPUT);
+  digitalWrite(led1, HIGH);
+  digitalWrite(led2, HIGH);
 }
 
 void loop()
