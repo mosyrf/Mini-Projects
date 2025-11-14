@@ -4,8 +4,8 @@
 
 // --- Konfigurasi Kamera (Pastikan Anda memiliki file header ini) ---
 #include "esp_camera.h"
-#include "board_config.h" // Dihilangkan jika tidak diperlukan
-#include "camera_pins.h"  // Perlu diimplementasikan (AI Thinker, dll.)
+#include "board_config.h"
+#include "camera_pins.h"
 
 // --- Konfigurasi Power (Hanya jika Anda menggunakan board dengan AXP313A) ---
 #include "DFRobot_AXP313A.h"
@@ -16,25 +16,24 @@ const char *WIFI_SSID = "SUHARNO";
 const char *WIFI_PASSWORD = "Suharno090970";
 
 // --- Konfigurasi MQTT ---
-const char *MQTT_USER = "mosyrf_mqtt";
-const char *MQTT_PASSWORD = "AvishaMQTT123";
-const char *MQTT_SERVER = "103.127.97.247";
-const int MQTT_PORT = 1883; // Port MQTT default (non-SSL)
-const char *MQTT_CLIENT_ID = "ESP32CAM-01";
-const char *MQTT_TOPIC = "esp32/camera";
+const char *MQTT_USER = "mosyrf";
+const char *MQTT_PASSWORD = "mosyrfMQTT";
+const char *MQTT_SERVER = "broker.avisha.id";
+const int MQTT_PORT = 1883;
+const char *MQTT_TOPIC = "mosyrf/camera";
 
 // Gunakan WiFiClient untuk koneksi jaringan pada ESP32
 WiFiClient espClient;
 PubSubClient client(espClient);
 
 // Buffer MQTT harus lebih besar dari ukuran gambar.
-// 20000 bytes (20KB) sudah tepat untuk HVGA JPEG.
 const int MQTT_BUFFER_SIZE = 1024 * 30;
 
 void cameraInit();
 void connectWifi();
 void connectMQTT();
 void grabImage();
+void buttonConfig();
 
 void setup()
 {
@@ -49,25 +48,32 @@ void setup()
     }
     axp.enableCameraPower(axp.eOV2640);
 
-    // Atur ukuran buffer MQTT sebelum inisialisasi server
-    client.setBufferSize(MQTT_BUFFER_SIZE);
-    client.setServer(MQTT_SERVER, MQTT_PORT); // Disarankan ditaruh di sini atau connectMQTT()
-
     connectWifi();
+    setTime();
+    espClient.setCACert(root_ca);
+    client.setBufferSize(MQTT_BUFFER_SIZE);
+    client.setServer(MQTT_SERVER, MQTT_PORT);
     cameraInit();
-    connectMQTT();
+
+    pinMode(led1, OUTPUT);
+    pinMode(led2, OUTPUT);
+    digitalWrite(led1, ledStatus);
+    digitalWrite(led2, ledStatus);
+
+    pinMode(inBoardButton, INPUT_PULLUP);
 }
 
 void loop()
 {
+    buttonConfig();
+
     if (!client.connected())
     {
-        connectMQTT(); // Pastikan klien terhubung
+        connectMQTT();
     }
 
-    client.loop(); // Memproses antrian MQTT
+    client.loop();
     grabImage();
-    delay(100);
 }
 
 void cameraInit()
@@ -132,12 +138,12 @@ void connectMQTT()
         Serial.print("Mencoba koneksi ke Server MQTT: ");
         Serial.print(MQTT_SERVER);
         Serial.print("...");
+        String clientId = "FOMO Model - " + String(random(0xffff), HEX);
 
         // Menggunakan otentikasi: client.connect(ID, USER, PASS)
         if (client.connect(MQTT_CLIENT_ID, MQTT_USER, MQTT_PASSWORD))
         {
-            Serial.println("Terhubung!");
-            // Klien berhasil terhubung, tidak perlu subscribe karena hanya publisher
+            Serial.println("Terhubung! (Verified)");
         }
         else
         {
@@ -181,10 +187,46 @@ void grabImage()
         }
         else
         {
-            Serial.println("Gagal Diterbitkan! Me-restart sistem...");
-            ESP.restart();
+            Serial.println("Gagal Diterbitkan! Mencoba sambungkan kembali...");
+            // Cek dan sambungkan kembali koneksi MQTT
+            if (!client.connected())
+            {
+                connectMQTT(); // Panggil fungsi untuk mencoba sambungkan ulang
+            }
+            // Tambahkan delay singkat atau logika retry
+            delay(100);
         }
     }
 
     esp_camera_fb_return(fb);
+}
+
+void buttonConfig()
+{
+    // Tombol terhubung ke INPUT_PULLUP, jadi status LOW saat tombol DITEKAN
+    int reading = digitalRead(inBoardButton);
+
+    // Cek apakah tombol sedang DITEKAN (LOW) dan debouncing sudah lewat
+    if (reading == LOW && (millis() - lastDebounceTime) > debounceDelay)
+    {
+        // Ubah status LED (Toggle)
+        ledStatus = !ledStatus;
+
+        // Terapkan status baru ke kedua LED
+        // Jika ledStatus true: LED MATI (HIGH). Jika ledStatus false: LED NYALA (LOW).
+        digitalWrite(led1, ledStatus);
+        digitalWrite(led2, ledStatus);
+
+        Serial.print("Tombol Ditekan! LED Status: ");
+        Serial.println(ledStatus ? "ON" : "OFF"); // Tampilkan status yang benar (kebalikan dari nilai digital)
+
+        // Catat waktu terakhir penekanan
+        lastDebounceTime = millis();
+
+        // Tunggu hingga tombol dilepas sebelum kembali (menghindari tekan ganda)
+        while (digitalRead(inBoardButton) == LOW)
+        {
+            delay(5);
+        }
+    }
 }
