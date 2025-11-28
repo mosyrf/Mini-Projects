@@ -10,12 +10,18 @@
 #include "DFRobot_AXP313A.h"
 DFRobot_AXP313A axp;
 
+// --- Konfigurasi Display ---
+#include <SPI.h>
+#include <TFT_eSPI.h>
+TFT_eSPI tft = TFT_eSPI();
+#include <TJpg_Decoder.h>
+
 // ====================================================================
 // --- Konfigurasi Keamanan ---
 // true = Menggunakan SSL (Port 8884, butuh sertifikat & sinkronisasi waktu)
 // false = Menggunakan Non-SSL (Port 1883, standar)
 // ====================================================================
-#define USE_MQTT_SSL true
+#define USE_MQTT_SSL false
 // ====================================================================
 
 // --- Konfigurasi Wi-Fi ---
@@ -42,36 +48,21 @@ const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 25200; // WIB (UTC+7)
 const int daylightOffset_sec = 0;
 
-// --- SERTIFIKAT CA ---
+// --- SERTIFIKAT CA --- (Dibiarkan untuk kebutuhan MQTT SSL)
 const char *root_ca = R"EOF(
 -----BEGIN CERTIFICATE-----
 MIIDtTCCAp2gAwIBAgIUOKMAqMXFCssUwLZtEx+8/dj+d/AwDQYJKoZIhvcNAQEL
 BQAwajELMAkGA1UEBhMCSUQxEDAOBgNVBAgMB0pha2FydGExEDAOBgNVBAcMB0ph
 a2FydGExDTALBgNVBAoMBEVNUVgxDTALBgNVBAsMBE1RVFQxGTAXBgNVBAMMEGJy
 b2tlci5hdmlzaGEuaWQwHhcNMjUxMTAyMTEzODM2WhcNMjYxMTAyMTEzODM2WjBq
-MQswCQYDVQQGEwJJRDEQMA4GA1UECAwHSmFrYXJ0YTEQMA4GA1UEBwwHSmFrYXJ0
-YTENMAsGA1UECgwERU1RWDENMAsGA1UECwwETVFUVDEZMBcGA1UEAwwQYnJva2Vy
-LmF2aXNoYS5pZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMAvKNx4
-/EBrDB/vhjL6L+hnoRuM623QFqkmje+I7YjsL0ehNTBnTCTbI0giflQlx0lE1OUC
-r3HbahOFovFJGbMbLF3JgKvJ7rtmfEhaURyuSNCAVJRxmnEFt+OgB6SntSQaJ0zP
-q5DT2EapWdiwbFkYsDTO6kyRtkBReZVc4rhTCaHFJnxEab3DbzVzteC2g8GSv0NX
-clO3+6yi9bRh0uH0u3rfux4I9r4GMYF9vdC7NDDaVFeHIsQRXKW1dh4KajdMnJvl
-K25whh4HAEryZ5JJsyCviWcmjZhvPW/WEha1ORPjpcw3dbCSa40zSQVoFKgJAPvJ
-mcsCKk6TUT8ENiUCAwEAAaNTMFEwHQYDVR0OBBYEFHDNv7W0hpVlgFt82uqmGU0O
-AnPuMB8GA1UdIwQYMBaAFHDNv7W0hpVlgFt82uqmGU0OAnPuMA8GA1UdEwEB/wQF
-MAMBAf8wDQYJKoZIhvcNAQELBQADggEBAIOK9N+TF7t/2bsbX3RlFzKG6Nn+qkA4
-KNXEbfHhgKN/xRrZWw5ay8v+mhwTKh/bgv2qb8sEVN4+79cgio+azzGGVTOsYQ0R
-bWblQy40xPZSzylEHPLtxDEvy/iQLeenV3MFIGRNgzDOzum5zEH6Vna81LaGyqOf
-W2fzRa0QuyV8i+NzUIDwKd2S6UBMqAqCkmoL3c8cAFXMabVuN3Lz+co0yebDX2kW
-SihneS6XYxxRAgoien4o814k4rP1OYarFUNSK7JFOOj7uyAr/3VkgX3e0n1M0IfD
-vzvlEDsvCUU3FP8IN5bhgF+sth/w6K4qUsmsWzdds4HJoMjFBpCQwyA=
+MQswCQYDVQQGEwJJRDEQMA4GA1UECAwHSmFrYXJ0YTEQMA4GAk
 -----END CERTIFICATE-----
 )EOF";
 
 WiFiClientSecure espClient; // Gunakan Client AMAN
 
 #else
-                                        // --- Jika SSL TIDAK AKTIF ---
+// --- Jika SSL TIDAK AKTIF ---
 const int MQTT_PORT = 1883;
 WiFiClient espClient; // Gunakan Client STANDAR
 
@@ -90,12 +81,21 @@ const int inBoardButton = 47;
 unsigned long lastDebounceTime = 0;
 const unsigned long debounceDelay = 50;
 
-// --- Deklarasi Fungsi  ---
+// --- Fungsi Callback Decoder JPEG untuk TFT_eSPI ---
+// Wajib ada untuk TJpg_Decoder
+bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t *bitmap) {
+    if (y >= tft.height()) return 0;
+    tft.pushImage(x, y, w, h, bitmap);
+    return 1;
+}
+
+// --- Deklarasi Fungsi  ---
 void cameraInit();
 void connectWifi();
 void connectMQTT();
 void grabImage();
 void buttonConfig();
+void display_jpeg_to_tft(uint8_t *jpeg_buf, size_t jpeg_len); 
 
 #if USE_MQTT_SSL
 void setTime();
@@ -130,6 +130,16 @@ void setup()
     client.setServer(MQTT_SERVER, MQTT_PORT);
     cameraInit();
 
+    // --- Inisialisasi TFT ---
+    tft.init();
+    tft.setRotation(1); 
+    tft.fillScreen(TFT_BLACK);
+    TJpgDec.setJpgScale(1); 
+    TJpgDec.setSwapBytes(true);
+    TJpgDec.setCallback(tft_output);
+    Serial.println("TFT Display Ready.");
+    // -------------------------
+
     pinMode(led1, OUTPUT);
     pinMode(led2, OUTPUT);
     digitalWrite(led1, ledStatus);
@@ -149,6 +159,25 @@ void loop()
     client.loop();
     grabImage();
 }
+
+// ====================================================================
+// --- Fungsi Tampilan Gambar ke TFT ---
+// Menampilkan buffer JPEG ke TFT menggunakan TJpg_Decoder
+// ====================================================================
+void display_jpeg_to_tft(uint8_t *jpeg_buf, size_t jpeg_len)
+{
+    if (!jpeg_buf || jpeg_len == 0)
+        return;
+
+    // Decoding dan menampilkan JPEG
+    // Posisi (0, 0)
+    int rc = TJpgDec.drawJpg(0, 0, jpeg_buf, jpeg_len);
+
+    if (rc != 1) {
+        Serial.printf("ERR: Gagal decode/draw JPEG: %d\n", rc);
+    }
+}
+
 
 void cameraInit()
 {
@@ -174,6 +203,8 @@ void cameraInit()
     config.xclk_freq_hz = 12000000;
     config.pixel_format = PIXFORMAT_JPEG;
 
+    // Sesuaikan FRAMESIZE agar sesuai dengan resolusi TFT (480x320)
+    // FRAMESIZE_HVGA (480x320) akan menjadi ukuran yang pas
     config.frame_size = FRAMESIZE_HVGA;
     config.jpeg_quality = 10;
     config.fb_count = 2;
@@ -205,7 +236,7 @@ void connectWifi()
     Serial.println(WiFi.localIP());
 }
 
-// ---  hanya akan dikompilasi SSL true ---
+// ---  hanya akan dikompilasi SSL true ---
 #if USE_MQTT_SSL
 void setTime()
 {
@@ -294,9 +325,13 @@ void grabImage()
         return;
     }
 
+    // --- Tampilkan Gambar ke TFT ---
+    display_jpeg_to_tft(fb->buf, fb->len);
+    // ------------------------------
+
     if (fb->len > MQTT_BUFFER_SIZE)
     {
-        Serial.printf("Gambar terlalu besar (%d bytes), dilewati.\n", fb->len);
+        Serial.printf("Gambar terlalu besar (%d bytes), dilewati dari MQTT.\n", fb->len);
     }
     else
     {
@@ -308,7 +343,6 @@ void grabImage()
         else
         {
             Serial.println("Gagal Diterbitkan! Mencoba sambungkan kembali...");
-            // Koneksi ulang akan ditangani oleh loop() utama
             delay(100);
         }
     }
