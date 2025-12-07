@@ -74,7 +74,7 @@ PubSubClient client(espClient);
 
 // --- Konfigurasi LED & Push Button ---
 const int led1 = 15;
-const int led2 = 9;
+const int led2 = 16;
 bool ledStatus = false;
 
 const int inBoardButton = 47;

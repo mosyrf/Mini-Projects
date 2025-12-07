@@ -13,7 +13,7 @@ import time
 # True = Menggunakan SSL (Port 8884, butuh sertifikat)
 # False = Menggunakan Non-SSL (Port 1883, standar)
 # ==========================================================
-USE_MQTT_SSL = True
+USE_MQTT_SSL = False
 # ==========================================================
 
 

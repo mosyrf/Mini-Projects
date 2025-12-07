@@ -10,6 +10,12 @@
 #include "DFRobot_AXP313A.h"
 DFRobot_AXP313A axp;
 
+// --- Konfigurasi Display ---
+#include <SPI.h>
+#include <TFT_eSPI.h>
+#include <TJpg_Decoder.h>
+TFT_eSPI tft = TFT_eSPI();
+
 // ====================================================================
 // --- Konfigurasi Keamanan ---
 // true = Menggunakan SSL (Port 8884, butuh sertifikat & sinkronisasi waktu)
@@ -83,11 +89,11 @@ PubSubClient client(espClient);
 
 // --- Konfigurasi LED & Push Button ---
 const int led1 = 15;
-const int led2 = 9;
+const int led2 = 16;
 bool ledStatus = false;
 
 const int ledControlPin = 47;
-const int captureImagePin = 16;
+const int captureImagePin = 13;
 unsigned long lastLedControl = 0;
 unsigned long lastCaptureImage = 0;
 const unsigned long debounceDelay = 50;
@@ -99,6 +105,8 @@ void connectMQTT();
 void grabImage();
 void buttonConfig();
 void handleCaptureButton();
+bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t *bitmap);
+void livePreview();
 
 #if USE_MQTT_SSL
 void setTime();
@@ -108,6 +116,7 @@ void setup()
 {
   Serial.begin(115200);
 
+  // --- Inisialisasi Power Kamera melalui AXP313A ---
   while (axp.begin() != 0)
   {
     Serial.println("AXP313A init error. Memerlukan board power management.");
@@ -116,6 +125,7 @@ void setup()
   axp.enableCameraPower(axp.eOV2640);
   Serial.println("AXP313A Power OK.");
 
+  // --- Inisialisasi Koneksi WiFi ---
   connectWifi();
 
 // --- Setup SSL ---
@@ -129,10 +139,26 @@ void setup()
 #endif
   // --- Akhir Setup SSL ---
 
+  // --- Inisialisasi MQTT ---
   client.setBufferSize(MQTT_BUFFER_SIZE);
   client.setServer(MQTT_SERVER, MQTT_PORT);
+  
+  // --- Inisialisasi Kamera ---
   cameraInit();
 
+  // --- Inisialisasi TFT ---
+  Serial.println("Menginisialisasi TFT...");
+  tft.init();
+  tft.setRotation(1); // Sesuaikan rotasi 
+  tft.fillScreen(TFT_BLACK);
+
+  // --- Inisialisasi TJpg_Decoder ---
+  TJpgDec.setJpgScale(1); 
+  TJpgDec.setSwapBytes(true);
+  TJpgDec.setCallback(tft_output);
+  Serial.println("TFT Siap.");
+
+  // --- Inisialisasi GPIO ---
   pinMode(led1, OUTPUT);
   pinMode(led2, OUTPUT);
   digitalWrite(led1, ledStatus);
@@ -153,6 +179,8 @@ void loop()
   }
 
   client.loop();
+
+  livePreview();
 }
 
 void cameraInit()
@@ -295,17 +323,20 @@ void grabImage()
   // Kita buang 2 frame karena fb_count = 2 di konfigurasi.
   Serial.println("Membersihkan buffer kamera...");
   camera_fb_t *fb_stale = NULL;
-  
-  for (int i = 0; i < 2; i++) {
+
+  for (int i = 0; i < 2; i++)
+  {
     fb_stale = esp_camera_fb_get();
-    if (!fb_stale) {
+    if (!fb_stale)
+    {
       Serial.println("Gagal saat flush frame buffer");
-    } else {
+    }
+    else
+    {
       esp_camera_fb_return(fb_stale); // Kembalikan buffer (buang gambarnya)
     }
   }
   // --- AKHIR MODIFIKASI ---
-
 
   // Sekarang, ambil frame yang "fresh" (paling baru)
   Serial.println("Mengambil gambar baru...");
@@ -379,4 +410,29 @@ void handleCaptureButton()
     }
     Serial.println("Tombol capture dilepas.");
   }
+}
+
+bool tft_output(int16_t x, int16_t y, uint16_t w, uint16_t h, uint16_t *bitmap) {
+    if (y >= tft.height()) return 0;
+    tft.pushImage(x, y, w, h, bitmap);
+    return 1;
+}
+
+void livePreview() {
+  camera_fb_t *fb = esp_camera_fb_get();
+  
+  if (!fb) {
+    Serial.println("Camera capture failed");
+    return;
+  }
+
+  // Hanya gambar jika formatnya JPEG
+  if (fb->format == PIXFORMAT_JPEG) {
+    // Render JPEG langsung ke TFT di posisi 0,0
+    // Pastikan ukuran frame sesuai/lebih kecil dari resolusi layar
+    TJpgDec.drawJpg(0, 0, (const uint8_t *)fb->buf, fb->len);
+  }
+
+  // SANGAT PENTING: Kembalikan buffer agar bisa dipakai frame berikutnya
+  esp_camera_fb_return(fb);
 }
